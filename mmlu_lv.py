@@ -48,7 +48,7 @@ if __name__ == "__main__":
 # (shuffle so that --limit draws from multiple subjects)
 dataset = csv_dataset(
     #csv_file="https://openaipublic.blob.core.windows.net/simple-evals/mmlu.csv",
-    csv_file="https://raw.githubusercontent.com/akanepajs/capabilities_lv/main/mmlu_lv100.csv",
+    csv_file="https://raw.githubusercontent.com/akanepajs/capabilities_lv/main/mmlu_shuffled_lv1.csv",
     sample_fields=record_to_sample,
     auto_id=True,
     shuffle=True,
