@@ -6,11 +6,14 @@ import requests
 import time
 import random
 
+# https://mymemory.translated.net/doc/spec.php
+# https://mymemory.translated.net/doc/usagelimits.php 
 def translate_text(text, target_lang='lv', source_lang='en'):
     base_url = "https://api.mymemory.translated.net/get"
     params = {
         "q": text,
-        "langpair": f"{source_lang}|{target_lang}"
+        "langpair": f"{source_lang}|{target_lang}",
+        "de": "akanepajs@gmail.com"
     }
 
     try:
@@ -49,8 +52,8 @@ def translate_with_char_limit(texts, char_limit=500):
 # Load the MMLU data
 df = pd.read_csv('/content/drive/MyDrive/mmlu.csv')
 
-# Randomly select 10 rows
-sample_df = df.sample(n=100, random_state=42)
+# Randomly select n rows
+sample_df = df.sample(n=1200, random_state=42)
 
 # Columns to translate
 columns_to_translate = ['Question', 'A', 'B', 'C', 'D']
@@ -61,9 +64,9 @@ for i, (index, row) in enumerate(sample_df.iterrows(), 1):
         original_text = str(row[column])
         translated_text = translate_with_char_limit([original_text])
         sample_df.at[index, column] = translated_text
-    print(f"Translated row {i}/100 (original dataset row {index + 1})")
+    print(f"Translated row {i} (original dataset row {index + 1})")
 
 # Save the translated data
-sample_df.to_csv('/content/drive/MyDrive/mmlu_lv100.csv', index=False)
+sample_df.to_csv('/content/drive/MyDrive/mmlu_lv1200.csv', index=False)
 
-print("Translation of 10 random rows completed. Check '/content/drive/MyDrive/mmlu_lv100.csv' in your Google Drive for results.")
+print("Translation completed.")
