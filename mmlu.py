@@ -46,7 +46,7 @@ def record_to_sample(record: dict[str, Any]) -> Sample:
 # read dataset globally so it can be shared by all of the tasks
 # (shuffle so that --limit draws from multiple subjects)
 dataset = csv_dataset(
-    csv_file="https://openaipublic.blob.core.windows.net/simple-evals/mmlu.csv",
+    csv_file="https://raw.githubusercontent.com/akanepajs/capabilities_lv/main/mmlu_shuffled1.csv",
     sample_fields=record_to_sample,
     auto_id=True,
     shuffle=True,
