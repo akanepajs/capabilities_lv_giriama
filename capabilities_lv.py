@@ -7,6 +7,7 @@ import os
 #!pip install openai
 #!pip install anthropic
 #!pip install --upgrade google-generativeai
+#!pip install mistralai
 
 
 # Set the API key
@@ -25,17 +26,17 @@ os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
 
 
 # Run the inspect command
-#!inspect eval mmlu.py --model openai/gpt-4o-2024-08-06	--limit 50
-#!inspect eval mmlu.py --model anthropic/claude-3-5-sonnet-20240620	--limit 50
-#!inspect eval mmlu.py --model google/gemini-1.5-pro-002 --limit 50
-#!inspect eval mmlu.py --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo
-#!inspect eval mmlu.py --model mistral/mistral-large-latest
+#!inspect eval mmlu.py --model openai/gpt-4o-2024-08-06	--limit 1000
+#!inspect eval mmlu.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
+#!inspect eval mmlu.py --model google/gemini-1.5-pro-002 --limit 1000
+#!inspect eval mmlu.py --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
+!inspect eval mmlu.py --model mistral/mistral-large-latest --limit 1000
 
-#!inspect eval mmlu_lv.py --model openai/gpt-4o-2024-08-06	--limit 50
-#!inspect eval mmlu_lv.py --model anthropic/claude-3-5-sonnet-20240620	--limit 50
-#!inspect eval mmlu_lv.py --model google/gemini-1.5-pro-002 --limit 50
-#!inspect eval mmlu_lv.py --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo
-#!inspect eval mmlu_lv.py --model mistral/mistral-large-latest
+#!inspect eval mmlu_lv.py --model openai/gpt-4o-2024-08-06	--limit 1000
+#!inspect eval mmlu_lv.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
+#!inspect eval mmlu_lv.py --model google/gemini-1.5-pro-002 --limit 1000
+#!inspect eval mmlu_lv.py --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
+#!inspect eval mmlu_lv.py --model mistral/mistral-large-latest --limit 1000
 
 # Other models
 #!inspect eval mmlu_lv.py --model openai/o1-mini-2024-09-12		--limit 50
@@ -44,4 +45,3 @@ os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
 #!inspect eval mmlu_lv.py --model google/gemini-1.5-flash-002	--limit 50
 #!inspect eval mmlu_lv.py --model openai/gpt-4o-mini-2024-07-18	--limit 50
 #!inspect eval mmlu_lv.py --model openai/gpt-4o-realtime-preview-2024-10-01	--limit 50
-
