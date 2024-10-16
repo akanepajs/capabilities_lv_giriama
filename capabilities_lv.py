@@ -1,3 +1,6 @@
+#from google.colab import drive
+#drive.mount('/content/drive')
+
 from google.colab import userdata
 import os
 
@@ -26,21 +29,51 @@ os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
 
 
 # Run the inspect command
+
+# English
+
 #!inspect eval mmlu.py --model openai/gpt-4o-2024-08-06	--limit 1000
 #!inspect eval mmlu.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
 #!inspect eval mmlu.py --model google/gemini-1.5-pro-002 --limit 1000
 #!inspect eval mmlu.py --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
-!inspect eval mmlu.py --model mistral/mistral-large-latest --limit 1000
+#!inspect eval mmlu.py --model mistral/mistral-large-latest --limit 1000
+# for o1-preview only temperature=1 allowed
+# !inspect eval mmlu_temperature1.py --model openai/o1-preview-2024-09-12 --limit 1000
+#!inspect eval mmlu.py --model together/meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo --limit 1000
+
+# Latvian
 
 #!inspect eval mmlu_lv.py --model openai/gpt-4o-2024-08-06	--limit 1000
 #!inspect eval mmlu_lv.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
 #!inspect eval mmlu_lv.py --model google/gemini-1.5-pro-002 --limit 1000
 #!inspect eval mmlu_lv.py --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
 #!inspect eval mmlu_lv.py --model mistral/mistral-large-latest --limit 1000
+# for o1-preview only temperature=1 allowed
+#!inspect eval mmlu_lv_temperature1.py --model openai/o1-preview-2024-09-12 --limit 1000
+
+# Latvian redacted
+
+#!inspect eval mmlu_lv_redacted.py  --model openai/gpt-4o-2024-08-06	--limit 1000
+#!inspect eval mmlu_lv_redacted.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
+#!inspect eval mmlu_lv_redacted.py  --model google/gemini-1.5-pro-002 --limit 1000
+#!inspect eval mmlu_lv_redacted.py  --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
+#!inspect eval mmlu_lv_redacted.py  --model mistral/mistral-large-latest --limit 1000
+# for o1-preview only temperature=1 allowed
+#!inspect eval mmlu_lv_redacted_temperature1.py --model openai/o1-preview-2024-09-12 --limit 1000
+
+
+# Latvian redacted, temperature = 1
+#!inspect eval mmlu_lv_redacted_temperature1.py  --model openai/gpt-4o-2024-08-06	--limit 1000
+#!inspect eval mmlu_lv_redacted_temperature1.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
+#!inspect eval mmlu_lv_redacted_temperature1.py  --model google/gemini-1.5-pro-002 --limit 1000
+#!inspect eval mmlu_lv_redacted_temperature1.py  --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
+#!inspect eval mmlu_lv_redacted_temperature1.py  --model mistral/mistral-large-latest --limit 1000
+
+
 
 # Other models
+
 #!inspect eval mmlu_lv.py --model openai/o1-mini-2024-09-12		--limit 50
-#!inspect eval mmlu_lv.py --model openai/o1-preview-2024-09-12 --limit 50
 #!inspect eval mmlu_lv.py --model anthropic/claude-3-haiku-20240307 --limit 50
 #!inspect eval mmlu_lv.py --model google/gemini-1.5-flash-002	--limit 50
 #!inspect eval mmlu_lv.py --model openai/gpt-4o-mini-2024-07-18	--limit 50
