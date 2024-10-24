@@ -2,20 +2,27 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
-def plot_model_scores(original_scores, n_samples=112):
+def wilson_score_interval(p, n, z=1.96):
+    denominator = 1 + z**2/n
+    center = (p + z**2/(2*n))/denominator
+    spread = z * np.sqrt(p*(1-p)/n + z**2/(4*n**2))/denominator
+    return center - spread, center + spread
+
+def plot_model_scores(original_scores, n_samples=112, color='lightcoral'):
+    # Create new figure
+    plt.figure(figsize=(7, 3.5))
+    
     # Use a bold font for all text
     plt.rcParams['font.weight'] = 'bold'
     plt.rcParams['axes.labelweight'] = 'bold'
     
-    # Model names with line breaks for Claude versions
     original_models = [
-        'o1-preview',  # 0.848
-        'Gemini 1.5 Pro',  # 0.786
-        'ChatGPT 4o',  # 0.759
-        'Claude 3.5 Sonnet\n(20240620)',  # 0.756
-        'Claude 3.5 Sonnet\n(20241022)',  # 0.804
-        'Llama 3.1 405B',  # 0.688
-        'Mistral Large 2'  # 0.580
+        'o1',
+        'Claude',
+        'Gemini',
+        'Llama',
+        '4o',
+        'Mistral'
     ]
     
     # Create pairs and sort by score
@@ -26,36 +33,30 @@ def plot_model_scores(original_scores, n_samples=112):
     models, scores = zip(*pairs)
     scores = list(scores)
     
-    # Calculate confidence intervals
+    # Calculate Wilson score intervals
     confidence_intervals = []
     for score in scores:
-        std_err = np.sqrt((score * (1 - score)) / n_samples)
-        ci = stats.norm.interval(0.95, loc=score, scale=std_err)
-        confidence_intervals.append((ci[1] - score, score - ci[0]))
+        lower, upper = wilson_score_interval(score, n_samples)
+        confidence_intervals.append((upper - score, score - lower))
     
-    # Convert to numpy arrays for easier manipulation
     errors = np.array(confidence_intervals).T
     
-    # Create the plot with larger figure size
-    plt.figure(figsize=(14, 7))
     x = np.arange(len(models))
     
     # Create bars
-    bars = plt.bar(x, scores, color='lightcoral', alpha=0.7)
+    bars = plt.bar(x, scores, color=color, alpha=0.7)
     
     # Add error bars
-    plt.errorbar(x, scores, yerr=errors, fmt='none', color='gray', capsize=5)
+    plt.errorbar(x, scores, yerr=errors, fmt='none', color='gray', capsize=10)
     
-    # Customize the plot
     plt.ylim(0, 1.0)
     plt.grid(True, axis='y', linestyle='--', alpha=0.7)
     
-    # Increase font sizes significantly and make bold
-    plt.xticks(x, models, rotation=45, ha='right', fontsize=14, weight='bold')
+    plt.xticks(x, models, rotation=0, ha='center', fontsize=14, weight='bold')
     plt.yticks(fontsize=14, weight='bold')
     plt.ylabel('Score', fontsize=16, weight='bold')
     
-    # Add value labels on top of each bar with larger, bold font
+    # Add value labels
     for bar in bars:
         height = bar.get_height()
         plt.text(bar.get_x() + bar.get_width()/2., height,
@@ -64,11 +65,88 @@ def plot_model_scores(original_scores, n_samples=112):
                 fontsize=14,
                 weight='bold')
     
-    # Adjust layout to prevent label cutoff
     plt.tight_layout()
-    return plt
 
-# Example usage with scores matching the original model order:
-scores = [0.848, 0.786, 0.759, 0.756, 0.804, 0.688, 0.580]
-plt = plot_model_scores(scores)
+# Data from the table
+latvian_scores = [0.848, 0.804, 0.786, 0.688, 0.759, 0.580]
+english_scores = [0.875, 0.866, 0.846, 0.839, 0.821, 0.768]
+giriama_scores = [0.643, 0.482, 0.509, 0.411, 0.464, 0.348]
+
+# Create three separate plots
+plot_model_scores(latvian_scores, color='lightcoral')
+plot_model_scores(english_scores, color='lightblue')
+plot_model_scores(giriama_scores, color='lightgreen')
+
 plt.show()
+
+# TABLE
+
+import numpy as np
+from scipy import stats
+
+# [Previous functions remain the same]
+
+def generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, giriama_scores, n_samples=112):
+    # Create model names and scores pairs
+    models = ['o1', 'Claude', 'Gemini', 'Llama', '4o', 'Mistral']
+    data = list(zip(models, english_scores, latvian_scores, latvian_auto_scores, giriama_scores))
+    
+    # Find best scores and indices for each language
+    best_english = max(english_scores)
+    best_latvian = max(latvian_scores)
+    best_latvian_auto = max(latvian_auto_scores)
+    best_giriama = max(giriama_scores)
+    
+    # Calculate averages
+    avg_english = np.mean(english_scores)
+    avg_latvian = np.mean(latvian_scores)
+    avg_latvian_auto = np.mean(latvian_auto_scores)
+    avg_giriama = np.mean(giriama_scores)
+    
+    # Generate table
+    table = """\\begin{table}[t]
+\\centering
+\\footnotesize
+\\begin{tabular}{@{}lcccc@{}}
+\\hline
+\\textbf{Model} & \\textbf{English} & \\textbf{Latvian} & \\textbf{Latvian (AT)} & \\textbf{Giriama} \\\\
+\\hline"""
+    
+    # Add model rows
+    for model, eng, lat, lat_auto, gir in data:
+        # Get significance levels
+        eng_stars = get_significance_level(eng, best_english, n_samples)
+        lat_stars = get_significance_level(lat, best_latvian, n_samples)
+        lat_auto_stars = get_significance_level(lat_auto, best_latvian_auto, n_samples)
+        gir_stars = get_significance_level(gir, best_giriama, n_samples)
+        
+        # Make scores bold if they're the highest in their column
+        eng_fmt = f"\\textbf{{{eng:.3f}}}" if eng == best_english else f"{eng:.3f}"
+        lat_fmt = f"\\textbf{{{lat:.3f}}}" if lat == best_latvian else f"{lat:.3f}"
+        lat_auto_fmt = f"\\textbf{{{lat_auto:.3f}}}" if lat_auto == best_latvian_auto else f"{lat_auto:.3f}"
+        gir_fmt = f"\\textbf{{{gir:.3f}}}" if gir == best_giriama else f"{gir:.3f}"
+        
+        row = f"\n{model} & {eng_fmt}{eng_stars} & {lat_fmt}{lat_stars} & {lat_auto_fmt}{lat_auto_stars} & {gir_fmt}{gir_stars} \\\\"
+        table += row
+    
+    # Add average row
+    table += f"""
+\\hline
+\\textbf{{AVG}} & \\textbf{{{avg_english:.3f}}} & \\textbf{{{avg_latvian:.3f}}} & \\textbf{{{avg_latvian_auto:.3f}}} & \\textbf{{{avg_giriama:.3f}}} \\\\
+\\hline
+\\end{{tabular}}
+\\caption{{Model performance across languages. AT: autotranslated. Each model: n={n_samples}; AVG: n={n_samples*6}. Boldface indicates the highest score in each column. Asterisks indicate statistically significant differences from the highest-scoring model within each language variant (*: p<0.05, **: p<0.01, ***: p<0.001).}}
+\\label{{tab:model-comparison}}
+\\end{{table}}"""
+    
+    return table
+
+# Your data
+english_scores = [0.875, 0.866, 0.846, 0.839, 0.821, 0.768]
+latvian_scores = [0.848, 0.804, 0.786, 0.688, 0.759, 0.580]
+latvian_auto_scores = [0.821, 0.777, 0.732, 0.643, 0.723, 0.580]
+giriama_scores = [0.643, 0.482, 0.509, 0.411, 0.464, 0.348]
+
+# Generate and print the table
+latex_table = generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, giriama_scores)
+print(latex_table)
