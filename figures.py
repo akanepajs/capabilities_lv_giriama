@@ -10,18 +10,18 @@ def wilson_score_interval(p, n, z=1.96):
 
 def plot_model_scores(original_scores, n_samples=112, color='lightcoral'):
     # Create new figure
-    plt.figure(figsize=(7, 3.5))
+    plt.figure(figsize=(6, 4.5))  # Slightly taller to accommodate rotated labels
     
     # Use a bold font for all text
     plt.rcParams['font.weight'] = 'bold'
     plt.rcParams['axes.labelweight'] = 'bold'
     
     original_models = [
-        'o1',
+        'o1-preview',
         'Claude',
         'Gemini',
         'Llama',
-        '4o',
+        'GPT-4o',
         'Mistral'
     ]
     
@@ -52,7 +52,8 @@ def plot_model_scores(original_scores, n_samples=112, color='lightcoral'):
     plt.ylim(0, 1.0)
     plt.grid(True, axis='y', linestyle='--', alpha=0.7)
     
-    plt.xticks(x, models, rotation=0, ha='center', fontsize=14, weight='bold')
+    # Rotate labels 45 degrees and adjust alignment
+    plt.xticks(x, models, rotation=45, ha='right', fontsize=14, weight='bold')
     plt.yticks(fontsize=14, weight='bold')
     plt.ylabel('Score', fontsize=16, weight='bold')
     
@@ -65,30 +66,30 @@ def plot_model_scores(original_scores, n_samples=112, color='lightcoral'):
                 fontsize=14,
                 weight='bold')
     
+    # Adjust layout to prevent label cutoff
     plt.tight_layout()
 
-# Data from the table
-latvian_scores = [0.848, 0.804, 0.786, 0.688, 0.759, 0.580]
-english_scores = [0.875, 0.866, 0.846, 0.839, 0.821, 0.768]
-giriama_scores = [0.643, 0.482, 0.509, 0.411, 0.464, 0.348]
-
-# Create three separate plots
-plot_model_scores(latvian_scores, color='lightcoral')
-plot_model_scores(english_scores, color='lightblue')
-plot_model_scores(giriama_scores, color='lightgreen')
-
-plt.show()
-
-# TABLE
-
-import numpy as np
-from scipy import stats
-
-# [Previous functions remain the same]
+# Rest of the code remains the same
+def get_significance_level(score, best_score, n_samples):
+    if score == best_score:
+        return ''
+    
+    # Perform two-proportion z-test
+    z_stat = (best_score - score) / np.sqrt(best_score*(1-best_score)/n_samples + score*(1-score)/n_samples)
+    p_value = 1 - stats.norm.cdf(z_stat)
+    
+    # Return appropriate number of asterisks based on p-value
+    if p_value < 0.001:
+        return '***'
+    elif p_value < 0.01:
+        return '**'
+    elif p_value < 0.05:
+        return '*'
+    return ''
 
 def generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, giriama_scores, n_samples=112):
     # Create model names and scores pairs
-    models = ['o1', 'Claude', 'Gemini', 'Llama', '4o', 'Mistral']
+    models = ['o1-preview', 'Claude', 'Gemini', 'Llama', 'GPT-4o', 'Mistral']
     data = list(zip(models, english_scores, latvian_scores, latvian_auto_scores, giriama_scores))
     
     # Find best scores and indices for each language
@@ -141,11 +142,17 @@ def generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, gi
     
     return table
 
-# Your data
-english_scores = [0.875, 0.866, 0.846, 0.839, 0.821, 0.768]
+# Data
 latvian_scores = [0.848, 0.804, 0.786, 0.688, 0.759, 0.580]
+english_scores = [0.875, 0.866, 0.846, 0.839, 0.821, 0.768]
 latvian_auto_scores = [0.821, 0.777, 0.732, 0.643, 0.723, 0.580]
 giriama_scores = [0.643, 0.482, 0.509, 0.411, 0.464, 0.348]
+
+# Generate plots
+plot_model_scores(latvian_scores, color='lightcoral')
+plot_model_scores(english_scores, color='lightblue')
+plot_model_scores(giriama_scores, color='lightgreen')
+plt.show()
 
 # Generate and print the table
 latex_table = generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, giriama_scores)
