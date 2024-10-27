@@ -47,8 +47,8 @@ def plot_model_scores(original_scores, n_samples=112, color='#1f77b4'):
     plt.ylim(0, 1.0)
     plt.grid(True, axis='y', linestyle='--', color='#cccccc', alpha=0.7)
 
-    # Removed bold from x-axis labels but kept it for other elements
-    plt.xticks(x, models, rotation=45, ha='right', fontsize=12, weight='normal', color='#333333')
+    # Changed x-axis labels to bold
+    plt.xticks(x, models, rotation=45, ha='right', fontsize=12, weight='bold', color='#333333')
     plt.yticks(fontsize=14, weight='bold', color='#333333')
     plt.ylabel('Score', fontsize=16, weight='bold', color='#333333')
 
