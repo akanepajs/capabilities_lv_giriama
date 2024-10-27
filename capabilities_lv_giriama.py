@@ -36,7 +36,7 @@ os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
 #!inspect eval mmlu.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
 #!inspect eval mmlu.py --model google/gemini-1.5-pro-002 --limit 1000
 #!inspect eval mmlu.py --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
-#!inspect eval mmlu.py --model mistral/mistral-large-latest --limit 1000
+#!inspect eval mmlu.py --model mistral/mistral-large-2407 --limit 1000
 # for o1-preview only temperature=1 allowed
 # !inspect eval mmlu_temperature1.py --model openai/o1-preview-2024-09-12 --limit 1000
 #!inspect eval mmlu.py --model together/meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo --limit 1000
@@ -49,7 +49,7 @@ os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
 #!inspect eval mmlu_lv.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
 #!inspect eval mmlu_lv.py --model google/gemini-1.5-pro-002 --limit 1000
 #!inspect eval mmlu_lv.py --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
-#!inspect eval mmlu_lv.py --model mistral/mistral-large-latest --limit 1000
+#!inspect eval mmlu_lv.py --model mistral/mistral-large-2407 --limit 1000
 # for o1-preview only temperature=1 allowed
 #!inspect eval mmlu_lv_temperature1.py --model openai/o1-preview-2024-09-12 --limit 1000
 #!inspect eval mmlu_lv.py  --model anthropic/claude-3-5-sonnet-20241022	--limit 1000
@@ -60,7 +60,7 @@ os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
 #!inspect eval mmlu_lv_redacted.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
 #!inspect eval mmlu_lv_redacted.py  --model google/gemini-1.5-pro-002 --limit 1000
 #!inspect eval mmlu_lv_redacted.py  --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
-#!inspect eval mmlu_lv_redacted.py  --model mistral/mistral-large-latest --limit 1000
+#!inspect eval mmlu_lv_redacted.py  --model mistral/mistral-large-2407 --limit 1000
 # for o1-preview only temperature=1 allowed
 #!inspect eval mmlu_lv_redacted_temperature1.py --model openai/o1-preview-2024-09-12 --limit 1000
 #!inspect eval mmlu_lv_redacted.py  --model anthropic/claude-3-5-sonnet-20241022	--limit 1000
@@ -71,7 +71,7 @@ os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
 #!inspect eval mmlu_lv_redacted_temperature1.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
 #!inspect eval mmlu_lv_redacted_temperature1.py  --model google/gemini-1.5-pro-002 --limit 1000
 #!inspect eval mmlu_lv_redacted_temperature1.py  --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
-#!inspect eval mmlu_lv_redacted_temperature1.py  --model mistral/mistral-large-latest --limit 1000
+#!inspect eval mmlu_lv_redacted_temperature1.py  --model mistral/mistral-large-2407 --limit 1000
 #!inspect eval mmlu_lv_redacted_temperature1.py --model anthropic/claude-3-5-sonnet-20241022	--limit 1000
 
 # Latvian unredacted
@@ -80,7 +80,7 @@ os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
 !inspect eval mmlu_giriama.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
 #!inspect eval mmlu_giriama.py --model google/gemini-1.5-pro-002 --limit 1000
 #!inspect eval mmlu_giriama.py --model together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo --limit 1000
-#!inspect eval mmlu_giriama.py --model mistral/mistral-large-latest --limit 1000
+#!inspect eval mmlu_giriama.py --model mistral/mistral-large-2407 --limit 1000
 # for o1-preview only temperature=1 allowed
 #!inspect eval mmlu_giriama_temperature1.py --model openai/o1-preview-2024-09-12 --limit 1000
 #!inspect eval mmlu_giriama.py  --model anthropic/claude-3-5-sonnet-20241022	--limit 1000
