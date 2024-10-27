@@ -77,8 +77,38 @@ plt.show()
 
 
 # Generate LaTeX Table
+import numpy as np
+from scipy import stats
+
+def two_prop_z_test(p1, p2, n):
+    """
+    Calculate p-value using two-proportion z-test
+    
+    Parameters:
+    p1, p2: proportions to compare
+    n: sample size for each proportion (assuming equal n)
+    """
+    # Convert to counts
+    x1 = round(p1 * n)
+    x2 = round(p2 * n)
+    
+    # Pooled proportion under null hypothesis
+    p_pooled = (x1 + x2) / (2 * n)
+    
+    # Standard error under null hypothesis
+    se = np.sqrt(p_pooled * (1 - p_pooled) * (2/n))
+    
+    # Z statistic
+    z_stat = (p1 - p2) / se
+    
+    # Two-tailed p-value
+    p_value = 2 * (1 - stats.norm.cdf(abs(z_stat)))
+    
+    return p_value
+
 def generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, giriama_scores, n_samples=112):
-    models = ['o1-preview-2024-09-12', 'claude-3-5-sonnet-20241022', 'gemini-1.5-pro-002', 'Meta-Llama-3.1-405B-Instruct-Turbo', 'gpt-4o-2024-08-06', 'mistral-large-2407']
+    models = ['o1-preview-2024-09-12', 'claude-3-5-sonnet-20241022', 'gemini-1.5-pro-002', 
+              'Meta-Llama-3.1-405B-Instruct-Turbo', 'gpt-4o-2024-08-06', 'mistral-large-2407']
     data = list(zip(models, english_scores, latvian_scores, latvian_auto_scores, giriama_scores))
 
     best_english = max(english_scores)
@@ -98,11 +128,11 @@ def generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, gi
 \\textbf{Model} & \\textbf{English} & \\textbf{Latvian} & \\textbf{Latvian (AT)} & \\textbf{Giriama} \\\\
 \\hline"""
 
-    def get_significance_level(score, best_score, n_samples):
+    def get_significance_level(score, best_score, n):
         if score == best_score:
             return ""
-        z = (best_score - score) / np.sqrt((score * (1-score) + best_score * (1-best_score)) / n_samples)
-        p_value = 2 * (1 - stats.norm.cdf(abs(z)))
+        # Calculate p-value using two-proportion z-test
+        p_value = two_prop_z_test(best_score, score, n)
         if p_value < 0.001:
             return "$^{***}$"
         elif p_value < 0.01:
@@ -130,7 +160,7 @@ def generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, gi
 \\textbf{{AVG}} & \\textbf{{{avg_english:.3f}}} & \\textbf{{{avg_latvian:.3f}}} & \\textbf{{{avg_latvian_auto:.3f}}} & \\textbf{{{avg_giriama:.3f}}} \\\\
 \\hline
 \\end{{tabular}}
-\\caption{{\\footnotesize \\textbf{{Model performance across languages. AT: autotranslated. Each model: n={n_samples}; AVG: n={n_samples*6}. Boldface indicates the highest score in each column. Asterisks indicate statistically significant differences from the highest-scoring model within each language variant (*: p<0.05, **: p<0.01, ***: p<0.001).}}}}
+\\caption{{\\footnotesize \\textbf{{Model performance across languages. AT: autotranslated. Each model: n={n_samples}; AVG: n={n_samples*6}. Boldface indicates the highest score in each column. Asterisks indicate statistically significant differences from the highest-scoring model within each language variant (*: p<0.05, **: p<0.01, ***: p<0.001), computed using two-proportion z-test.}}}}
 \\label{{tab:model-comparison}}
 \\end{{table*}}"""
 
