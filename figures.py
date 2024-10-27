@@ -64,7 +64,7 @@ def plot_model_scores(original_scores, n_samples=112, color='#1f77b4'):
 
 
 # Sample Data
-latvian_scores = [0.848, 0.804, 0.786, 0.688, 0.759, 0.580]
+latvian_scores = [0.848, 0.804, 0.786, 0.688, 0.759, 0.571]
 english_scores = [0.875, 0.866, 0.846, 0.839, 0.821, 0.768]
 latvian_auto_scores = [0.821, 0.777, 0.732, 0.643, 0.723, 0.580]
 giriama_scores = [0.643, 0.482, 0.509, 0.411, 0.464, 0.348]
