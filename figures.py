@@ -62,7 +62,6 @@ def plot_model_scores(original_scores, n_samples=112, color='#1f77b4'):
 
     plt.tight_layout()
 
-# [Rest of the code remains exactly the same...]
 
 # Sample Data
 latvian_scores = [0.848, 0.804, 0.786, 0.688, 0.759, 0.580]
@@ -75,6 +74,7 @@ plot_model_scores(latvian_scores, color='#1f77b4')  # Latvian scores in blue
 plot_model_scores(english_scores, color='#ff7f0e')  # English scores in orange
 plot_model_scores(giriama_scores, color='#2ca02c')  # Giriama scores in green
 plt.show()
+
 
 # Generate LaTeX Table
 def generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, giriama_scores, n_samples=112):
@@ -91,13 +91,25 @@ def generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, gi
     avg_latvian_auto = np.mean(latvian_auto_scores)
     avg_giriama = np.mean(giriama_scores)
 
-    table = """\\begin{table}[t]
+    table = """\\begin{table*}[t!]
 \\centering
-\\footnotesize
 \\begin{tabular}{@{}lcccc@{}}
 \\hline
 \\textbf{Model} & \\textbf{English} & \\textbf{Latvian} & \\textbf{Latvian (AT)} & \\textbf{Giriama} \\\\
 \\hline"""
+
+    def get_significance_level(score, best_score, n_samples):
+        if score == best_score:
+            return ""
+        z = (best_score - score) / np.sqrt((score * (1-score) + best_score * (1-best_score)) / n_samples)
+        p_value = 2 * (1 - stats.norm.cdf(abs(z)))
+        if p_value < 0.001:
+            return "$^{***}$"
+        elif p_value < 0.01:
+            return "$^{**}$"
+        elif p_value < 0.05:
+            return "$^{*}$"
+        return ""
 
     for model, eng, lat, lat_auto, gir in data:
         eng_stars = get_significance_level(eng, best_english, n_samples)
@@ -118,23 +130,11 @@ def generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, gi
 \\textbf{{AVG}} & \\textbf{{{avg_english:.3f}}} & \\textbf{{{avg_latvian:.3f}}} & \\textbf{{{avg_latvian_auto:.3f}}} & \\textbf{{{avg_giriama:.3f}}} \\\\
 \\hline
 \\end{{tabular}}
-\\caption{{Model performance across languages. AT: autotranslated. Each model: n={n_samples}; AVG: n={n_samples*6}. Boldface indicates the highest score in each column. Asterisks indicate statistically significant differences from the highest-scoring model within each language variant (*: p<0.05, **: p<0.01, ***: p<0.001).}}
+\\caption{{\\footnotesize \\textbf{{Model performance across languages. AT: autotranslated. Each model: n={n_samples}; AVG: n={n_samples*6}. Boldface indicates the highest score in each column. Asterisks indicate statistically significant differences from the highest-scoring model within each language variant (*: p<0.05, **: p<0.01, ***: p<0.001).}}}}
 \\label{{tab:model-comparison}}
-\\end{{table}}"""
+\\end{{table*}}"""
 
     return table
-
-# Sample Data
-latvian_scores = [0.848, 0.804, 0.786, 0.688, 0.759, 0.580]
-english_scores = [0.875, 0.866, 0.846, 0.839, 0.821, 0.768]
-latvian_auto_scores = [0.821, 0.777, 0.732, 0.643, 0.723, 0.580]
-giriama_scores = [0.643, 0.482, 0.509, 0.411, 0.464, 0.348]
-
-# Generate Plots with Different Colors for Contrast
-plot_model_scores(latvian_scores, color='#1f77b4')  # Latvian scores in blue
-plot_model_scores(english_scores, color='#ff7f0e')  # English scores in orange
-plot_model_scores(giriama_scores, color='#2ca02c')  # Giriama scores in green
-plt.show()
 
 # Generate and Print LaTeX Table
 latex_table = generate_latex_table(english_scores, latvian_scores, latvian_auto_scores, giriama_scores)
