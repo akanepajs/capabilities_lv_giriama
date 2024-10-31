@@ -1,4 +1,4 @@
-# capabilities_lv
+# capabilities_lv_giriama
 # Author: Arturs Kanepajs, October 2024
 # This code runs evals for different models on 112 randomly selected and translated MMLU questions.
 # Languages - English (original), Latvian autotranslated, Latvian autotranslated + edited, Giriama.
