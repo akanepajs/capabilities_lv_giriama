@@ -1,3 +1,10 @@
+# Author: Arturs Kanepajs, October 2024
+# This code runs evals for different models on 112 randomly selected and translated MMLU questions.
+# Languages - English (original), Latvian autotranslated, Latvian autotranslated + edited, Giriama.
+# The main aim is to compare the performance of different models in these medium and low resource languages.
+# The key limitation is the small sample size.
+# Final results not publicly available (submitted to a conference), contact author if interested.
+
 #from google.colab import drive
 #drive.mount('/content/drive')
 
@@ -74,7 +81,7 @@ os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
 #!inspect eval mmlu_lv_redacted_temperature1.py  --model mistral/mistral-large-2407 --limit 1000
 #!inspect eval mmlu_lv_redacted_temperature1.py --model anthropic/claude-3-5-sonnet-20241022	--limit 1000
 
-# Latvian unredacted
+# Giriama
 
 #!inspect eval mmlu_giriama.py --model openai/gpt-4o-2024-08-06	--limit 1000
 !inspect eval mmlu_giriama.py --model anthropic/claude-3-5-sonnet-20240620	--limit 1000
