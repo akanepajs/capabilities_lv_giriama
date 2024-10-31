@@ -1,0 +1,154 @@
+import os
+import pandas as pd
+import requests
+import json
+from tqdm import tqdm
+import time
+import sys
+
+def format_size(size_bytes):
+    """Convert bytes to human readable format"""
+    for unit in ['B', 'KB', 'MB', 'GB']:
+        if size_bytes < 1024.0:
+            return f"{size_bytes:.2f} {unit}"
+        size_bytes /= 1024.0
+    return f"{size_bytes:.2f} GB"
+
+def get_all_files():
+    """
+    Get complete file list using HuggingFace API
+    """
+    print("Fetching complete file list using API...")
+    
+    api_url = "https://huggingface.co/api/datasets/openGPT-X/mmlux/tree/main"
+    
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
+        
+        # Parse the JSON response
+        files_data = response.json()
+        
+        # Get all .jsonl files
+        jsonl_files = [
+            file['path'] 
+            for file in files_data 
+            if file['type'] == 'file' 
+            and file['path'].endswith('.jsonl')
+        ]
+        
+        return jsonl_files
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching file list: {e}")
+        return []
+
+def download_and_process_files(base_file_url, output_dir='downloaded_files', max_retries=3, delay_between_retries=5):
+    """
+    Download and process files from HuggingFace datasets with retry mechanism and progress tracking.
+    """
+    # Create output directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Create a session for better performance
+    session = requests.Session()
+    
+    # Get complete file list
+    files = get_all_files()
+    
+    if not files:
+        print("No files found! Check the repository URL and permissions.")
+        return
+    
+    print(f"\nFound {len(files)} files to process:")
+    for f in files:
+        print(f"- {f}")
+    
+    # Confirm with user
+    print(f"\nPreparing to download {len(files)} files. Continue? (y/n)")
+    if input().lower() != 'y':
+        print("Download cancelled.")
+        return
+    
+    # Track total size
+    total_size = 0
+    successful_downloads = 0
+    failed_downloads = []
+    
+    # Process each file
+    for file_path in tqdm(files, desc="Processing files"):
+        file_url = base_file_url + file_path
+        output_path = os.path.join(output_dir, os.path.basename(file_path).replace('.jsonl', '.csv'))
+        
+        # Skip if file already exists
+        if os.path.exists(output_path):
+            file_size = os.path.getsize(output_path)
+            print(f"\nSkipping {file_path} - already exists ({format_size(file_size)})")
+            total_size += file_size
+            successful_downloads += 1
+            continue
+            
+        for attempt in range(max_retries):
+            try:
+                # Download the file
+                response = session.get(file_url, stream=True)
+                response.raise_for_status()
+                
+                # Read all lines from the response
+                data = []
+                raw_size = 0
+                for line in response.iter_lines():
+                    if line:  # Only process non-empty lines
+                        raw_size += len(line)
+                        try:
+                            data.append(json.loads(line.decode('utf-8')))
+                        except json.JSONDecodeError as e:
+                            print(f"Error parsing JSON in {file_path}: {e}")
+                            continue
+                
+                # Convert to DataFrame
+                df = pd.DataFrame(data)
+                
+                # Save to CSV
+                df.to_csv(output_path, index=False)
+                
+                # Get file size
+                file_size = os.path.getsize(output_path)
+                total_size += file_size
+                successful_downloads += 1
+                
+                print(f"\nSaved {output_path}")
+                print(f"Rows: {len(df)}")
+                print(f"File size: {format_size(file_size)}")
+                
+                # Add a small delay between files to avoid rate limiting
+                time.sleep(1)
+                break  # Success - exit retry loop
+                
+            except requests.exceptions.RequestException as e:
+                if attempt < max_retries - 1:
+                    print(f"\nRetry {attempt + 1}/{max_retries} for {file_path} after error: {e}")
+                    time.sleep(delay_between_retries)
+                else:
+                    print(f"\nFailed to download {file_path} after {max_retries} attempts: {e}")
+                    failed_downloads.append(file_path)
+            except Exception as e:
+                print(f"\nUnexpected error processing {file_path}: {e}")
+                failed_downloads.append(file_path)
+                break
+    
+    print(f"\nDownload complete!")
+    print(f"Successfully processed: {successful_downloads}/{len(files)} files")
+    print(f"Total size on disk: {format_size(total_size)}")
+    
+    if failed_downloads:
+        print("\nFailed downloads:")
+        for failed in failed_downloads:
+            print(f"- {failed}")
+
+if __name__ == "__main__":
+    # Configuration
+    base_file_url = 'https://huggingface.co/datasets/openGPT-X/mmlux/resolve/main/'
+    
+    # Run the download process
+    download_and_process_files(base_file_url)
