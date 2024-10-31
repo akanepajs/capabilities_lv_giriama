@@ -5,3 +5,4 @@
 # The main aim is to compare the performance of different models in these medium and low resource languages.
 # The key limitation is the small sample size.
 # Final results not publicly available (submitted to a conference), contact the author if interested)
+# capabilities_lv_giriama.py is the main file to be executed.
