@@ -70,13 +70,14 @@ This is an academic research project with results currently under peer review. T
 If you use or adapt this code for your research, please reach out to the author regarding proper attribution and citation details.
 
 Earlier version and shorter of the paper whic did not include Giriama aviable here:
-Please cite as:
+https://github.com/akanepajs/capabilities_lv_giriama/blob/main/Benchmarking%20Frontier%20LLM%20Understanding%20in%20Latvian.pdf
 
+Please cite the earlier version as:
+
+```bibtex
 @article{kanepajs2024benchmarking,
   title={Benchmarking Frontier LLM Understanding in Latvian},
   author={Kanepajs, Arturs},
   year={2024}
 }
-
-
-
+```
