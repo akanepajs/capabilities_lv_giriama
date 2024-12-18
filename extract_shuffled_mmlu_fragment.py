@@ -26,4 +26,4 @@ def extract_csv_subset(input_file, output_file, start_row, num_rows):
 input_file = 'mmlu_shuffled_all.csv'  # Replace with your actual input file name
 output_file = 'mmlu_shuffled_113-500.csv'
 
-extract_csv_subset(input_file, output_file, start_row=113, num_rows=388)
+extract_csv_subset(input_file, output_file, start_row=112, num_rows=388)
