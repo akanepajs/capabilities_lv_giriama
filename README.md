@@ -42,6 +42,6 @@ os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
 os.environ['TOGETHER_API_KEY'] = userdata.get('TOGETHER_API_KEY')
 
 %cd /content
-os.environ['LANGUAGE'] = 'giriama'
-!inspect eval mmlu.py@mmlu_0_shot --model together/deepseek-ai/DeepSeek-V3 --log-dir ./gpt-4o -T cot=false
+os.environ['LANGUAGE'] = 'latvian'
+!inspect eval mmlu.py@mmlu_0_shot --model together/deepseek-ai/DeepSeek-R1 --log-dir ./DeepSeek-R1 -T cot=false
 ```
