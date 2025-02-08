@@ -6,7 +6,7 @@ This repository contains evaluation code for testing large language model (LLM) 
 
 ## Project Details
 
-- **Dataset**: 112 randomly selected questions from the MMLU benchmark
+- **Dataset**: 500 randomly selected questions from the MMLU benchmark
 - **Languages**:
   - English (original)
   - Latvian (machine-translated)
@@ -21,7 +21,7 @@ This is an academic research project with results currently under peer review. T
 
 ## Limitations
 
-- Limited sample size (112 questions)
+- Limited sample size (500 questions)
 - Focus on specific language pairs
 - Experimental nature of translations in low-resource languages
 
@@ -29,17 +29,19 @@ This is an academic research project with results currently under peer review. T
 USed AISI Inspect framework, and base code for MMLU evals:
 https://github.com/UKGovernmentBEIS/inspect_evals/blob/main/src/inspect_evals/mmlu/mmlu.py 
 
-If you use or adapt this code for your research, please reach out to the author regarding proper attribution and citation details.
+Run e.g. as follows:
 
-Earlier version and shorter of the paper whic did not include Giriama aviable here:
-https://github.com/akanepajs/capabilities_lv_giriama/blob/main/Benchmarking%20Frontier%20LLM%20Understanding%20in%20Latvian.pdf
+```
+import os
+from google.colab import userdata
+!pip install inspect-ai
+os.environ['ANTHROPIC_API_KEY'] = userdata.get('ANTHROPIC_API_KEY')
+os.environ['GOOGLE_API_KEY'] = userdata.get('GOOGLE_API_KEY')
+os.environ['OPENAI_API_KEY'] = userdata.get('OPENAI_API_KEY')
+os.environ['MISTRAL_API_KEY'] = userdata.get('MISTRAL_API_KEY')
+os.environ['TOGETHER_API_KEY'] = userdata.get('TOGETHER_API_KEY')
 
-Please cite the earlier version as:
-
-```bibtex
-@article{kanepajs2024benchmarking,
-  title={Benchmarking Frontier LLM Understanding in Latvian},
-  author={Kanepajs, Arturs},
-  year={2024}
-}
+%cd /content
+os.environ['LANGUAGE'] = 'giriama'
+!inspect eval mmlu.py@mmlu_0_shot --model together/deepseek-ai/DeepSeek-V3 --log-dir ./gpt-4o -T cot=false
 ```
